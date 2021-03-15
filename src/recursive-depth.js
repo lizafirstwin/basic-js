@@ -1,14 +1,8 @@
 const CustomError = require("../extensions/custom-error");
 
 module.exports = class DepthCalculator {
-  calculateDepth(arr){
-    let flag = 1;
-    for(let item of arr){
-      if(Array.isArray(item))	{
-        flag++;
-        calculateDepth(item);
-      }
-    }
-    return flag;
-  } 
+  calculateDepth(array, depth = 1) {
+    return arr.find((item) => Array.isArray(item))
+      ? this.calculateDepth(array.flat(1), depth + 1) : depth;
+  }
 };
