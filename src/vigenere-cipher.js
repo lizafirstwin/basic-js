@@ -1,26 +1,45 @@
 const CustomError = require("../extensions/custom-error");
 
 class VigenereCipheringMachine {
-  encrypt(word, key) {
-    if(word.length > key.length) {
-      key += key;
-    }
-      let alphabet = 'a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z'.split(', ').join('');
-      
-      let chyper = [];
-      for(let i = 0; i < word.length; i++) {
-        chyper[i]  = alphabet[(alphabet.indexOf(word[i]) + alphabet.indexOf(key[i])) % 26];
-      }
-      return chyper.join('').toUpperCase();
-    }
-  decrypt(chyper, key) {
-    let word = [];
-    let alphabet = 'a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z'.split(', ').join('');
-    for(let i = 0; i < chyper.length; i++) {
-      word[i]  = alphabet[(alphabet.indexOf(chyper[i]) - alphabet.indexOf(key[i]) + 26) % 26];
-    }
-    return word.join('').toUpperCase();
+  constructor (direction = true) {
+    this.direction = direction;
   }
-}
+
+  encrypt(message, key) {
+    if (message === undefined || key === undefined) throw new Error('');
+    key = key.toUpperCase();
+    message = message.toUpperCase();
+    let j = 0;
+    let cipher = '';
+  
+    for (let i = 0; i < message.length; i++){
+      if (message.charCodeAt(i) >= 65 && message.charCodeAt(i) <= 90) {
+        
+        cipher += String.fromCharCode((message.charCodeAt(i) + key.charCodeAt(j % key.length) - 130) % 26 + 65);
+        j++;
+      }
+      else cipher += message[i];
+    }
+    if (this.direction) return cipher;   
+    else return cipher.split('').reverse().join('');
+  }  
+
+  decrypt(message, key) {
+    if (message === undefined || key === undefined) throw new Error('');
+    key = key.toUpperCase();
+    message = message.toUpperCase();
+    let j = 0;
+    let dCrypt = '';
+    for (let i = 0; i < message.length; i++){
+      if (message.charCodeAt(i) >= 65 && message.charCodeAt(i) <= 90) {
+        dCrypt += String.fromCharCode((message.charCodeAt(i) + 26 - key.charCodeAt(j % key.length)) % 26 + 65);
+        j++;
+      }
+      else dCrypt += message[i];
+    }
+    if (this.direction) return dCrypt;   
+    else return dCrypt.split('').reverse().join('');
+  }
+  }
 
 module.exports = VigenereCipheringMachine;
